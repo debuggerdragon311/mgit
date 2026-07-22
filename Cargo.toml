@@ -1,0 +1,17 @@
+[package]
+name = "mgit"
+version = "0.0.1"
+edition = "2024"
+
+[dependencies]
+clap = {version = "4.6", features = ["derive"]}
+sha1_smol = "1.0"
+flate2 = "1.0"
+
+[profile.release]
+opt-level = "s"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+rpath = false
