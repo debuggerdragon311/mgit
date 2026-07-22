@@ -6,6 +6,8 @@
 
 use std::env;
 
+mod init;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -16,6 +18,7 @@ fn main() {
     }
 
     match args[1].as_str() {
+        "init" => init::run(),
         "-h" | "--help" => println!("{}", r#"
 mgit
   A version control system for tracking file changes.
