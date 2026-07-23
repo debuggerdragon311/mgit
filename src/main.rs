@@ -7,6 +7,8 @@
 use std::env;
 
 mod init;
+mod add;
+mod index;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,6 +21,14 @@ fn main() {
 
     match args[1].as_str() {
         "init" => init::run(),
+        "add" => {
+            if args.len() < 3 {
+                eprintln!("Error: 'mgit add' requires a file path.");
+                eprintln!("Usage: mgit add <file>");
+                return;
+            }
+            add::run(args[2].clone());
+        },
         "-h" | "--help" => println!("{}", r#"
 mgit
   A version control system for tracking file changes.
