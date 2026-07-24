@@ -30,23 +30,24 @@
 /// SHA-1
 /// filename
 /// cache entries
-use std::fs::{self, File, OpenOptions};
+// use std::fs::{self, File, OpenOptions};
+use std::fs::{self, File};
 use std::io::Write;
 use std::path::Path;
 
-pub fn create_index() {
-    match File::create(".mgit/index") {
-        Ok(_) => {
-            if cfg!(debug_assertions) {
-                println!("[DEBUG] index created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create index. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
-}
+// pub fn create_index() {
+//     match File::create(".mgit/index") {
+//         Ok(_) => {
+//             if cfg!(debug_assertions) {
+//                 println!("[DEBUG] index created...");
+//             }
+//         }
+//         Err(error) => {
+//             eprintln!("Could not create index. Details: {}", error);
+//             std::process::exit(1);
+//         }
+//     };
+// }
 
 pub fn update_index(hash: &str, file: &str) {
     let index_path = ".mgit/index";

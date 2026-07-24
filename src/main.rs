@@ -33,6 +33,8 @@ mod init;
 mod add;
 mod index;
 mod status;
+mod commit;
+mod log;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -54,6 +56,27 @@ fn main() {
             add::run(args[2].clone());
         },
         "status" => status::run(),
+        "commit" => {
+            if args.len() < 3 {
+                eprintln!("Error: 'mgit commit' requires a message.");
+                eprintln!("Usage: mgit commit <message> OR mgit commit -m <message>");
+                return;
+            }
+
+            let message = if args[2] == "-m" {
+                if args.len() < 4 {
+                    eprintln!("Error: Please provide a message after -m.");
+                    eprintln!("Usage: mgit commit -m <message>");
+                    return;
+                }
+                args[3].clone()
+            } else {
+                args[2].clone()
+            };
+
+            commit::run(message);
+        },
+        "log" => log::run(),
         "-h" | "--help" => println!("{}", r#"
 mgit
   A version control system for tracking file changes.
