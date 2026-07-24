@@ -9,6 +9,7 @@ use std::env;
 mod init;
 mod add;
 mod index;
+mod status;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -29,6 +30,7 @@ fn main() {
             }
             add::run(args[2].clone());
         },
+        "status" => status::run(),
         "-h" | "--help" => println!("{}", r#"
 mgit
   A version control system for tracking file changes.
