@@ -1,3 +1,6 @@
 /target
 /third_party
 .cargo/
+.vscode/
+docs/
+tests/

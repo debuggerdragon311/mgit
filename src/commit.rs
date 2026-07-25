@@ -131,9 +131,9 @@ pub fn run(message: String) {
 
     let mut commit_content = String::new();
     if let Some(ref parent) = parent_hash {
-        commit_content.push_str(&format!("parent {}\n", parent));
+        commit_content.push_str(&format!("parent: {}\n", parent));
     }
-    commit_content.push_str(&format!("message {}\n", message));
+    commit_content.push_str(&format!("message: {}\n", message));
     commit_content.push_str("files:\n");
     for line in index_contents.lines() {
         let trimmed = line.trim();

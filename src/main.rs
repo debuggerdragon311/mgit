@@ -21,17 +21,10 @@
 /* <https://www.gnu.org/licenses/>.                                       */
 /**************************************************************************/
 
-/// program
-/// |---commands
-/// |---subcommands(optional)
-///      |--- options/flags
-///      |--- args
-
 use std::env;
 
 mod init;
 mod add;
-mod index;
 mod status;
 mod commit;
 mod log;

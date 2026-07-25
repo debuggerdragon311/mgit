@@ -35,7 +35,6 @@ const COLOR_RED: &str = "\x1b[31m";
 const COLOR_YELLOW: &str = "\x1b[33m";
 
 // Helpers
-
 fn hash_file(data: &[u8]) -> String {
     let mut hasher = Sha1::new();
     hasher.update(data);

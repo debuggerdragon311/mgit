@@ -99,10 +99,10 @@ pub fn run() {
         let mut message = String::new();
 
         for line in commit_content.lines() {
-            if line.starts_with("parent ") {
-                parent = Some(line["parent ".len()..].trim().to_string());
-            } else if line.starts_with("message ") {
-                message = line["message ".len()..].trim().to_string();
+            if line.starts_with("parent: ") {
+                parent = Some(line["parent: ".len()..].trim().to_string());
+            } else if line.starts_with("message: ") {
+                message = line["message: ".len()..].trim().to_string();
             }
         }
 
@@ -117,7 +117,7 @@ pub fn run() {
             println!("│");
             current_hash = p.clone();
         } else {
-            current_hash.clear(); // End of graph traversal
+            current_hash.clear();
         }
     }
 }

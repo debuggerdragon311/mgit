@@ -21,7 +21,7 @@
 /* <https://www.gnu.org/licenses/>.                                       */
 /**************************************************************************/
 
-use std::fs;
+use std::fs::{self, File};
 use std::path::Path;
 use std::io::{Read, Write};
 
@@ -30,22 +30,20 @@ use flate2::write::ZlibEncoder;
 use flate2::read::ZlibDecoder;
 use flate2::Compression;
 
-use crate::index;
-
 fn check_repo(){
     let verify = vec![
         Path::new(".mgit/"),
-        Path::new(".mgit/hooks/"),
-        Path::new(".mgit/info/"),
-        Path::new(".mgit/info/exclude"),
+        // Path::new(".mgit/hooks/"),
+        // Path::new(".mgit/info/"),
+        // Path::new(".mgit/info/exclude"),
         Path::new(".mgit/objects"),
-        Path::new(".mgit/objects/info/"),
-        Path::new(".mgit/objects/pak/"),
+        // Path::new(".mgit/objects/info/"),
+        // Path::new(".mgit/objects/pak/"),
         Path::new(".mgit/refs/"),
         Path::new(".mgit/refs/heads/"),
         Path::new(".mgit/refs/tags/"),
-        Path::new(".mgit/config"),
-        Path::new(".mgit/description"),
+        // Path::new(".mgit/config"),
+        // Path::new(".mgit/description"),
         Path::new(".mgit/HEAD"),
     ];
 
@@ -55,11 +53,11 @@ fn check_repo(){
         } else {
             if cfg!(debug_assertions) {
                 println!("[OK] {:?}",path);
-
             }
         }
     }
 }
+
 fn read_file(file: &str) -> Option<Vec<u8>> {
     match fs::read(file) {
         Ok(data) => {
@@ -74,6 +72,7 @@ fn read_file(file: &str) -> Option<Vec<u8>> {
         }
     }
 }
+
 fn hash_bytes(data: &[u8]) -> String {
     let mut hasher = Sha1::new();
     hasher.update(data);
@@ -81,14 +80,13 @@ fn hash_bytes(data: &[u8]) -> String {
 }
 
 /// Stores the blob in .mgit/objects/<hash[0..2]>/<hash[2..]>
-fn store_blob(data: &[u8],hash:&str) -> std::io::Result<()>{
+fn store_blob(data: &[u8], hash: &str) -> std::io::Result<()> {
     let (dir, file) = hash.split_at(2);
     let dir = format!(".mgit/objects/{}", dir);
-    let file = format!("{}/{}", dir,file);
+    let file = format!("{}/{}", dir, file);
     let _ = fs::create_dir_all(dir);
 
-    // convert the data to blob
-    let header = format!("blob {}\0",data.len());
+    let header = format!("blob {}\0", data.len());
     let mut store = Vec::new();
     store.extend_from_slice(header.as_bytes());
     store.extend_from_slice(data);
@@ -97,11 +95,11 @@ fn store_blob(data: &[u8],hash:&str) -> std::io::Result<()>{
     encoder.write_all(&store)?;
     let compressed = encoder.finish()?;
 
-    match fs::write(&file,compressed){
+    match fs::write(&file, compressed) {
         Ok(_) => if cfg!(debug_assertions) {
-                    println!("[DEBUG] Stored blob at {:?}", &file);
-                },
-        Err(e) => eprintln!("Failed to read file: {}", e),
+            println!("[DEBUG] Stored blob at {:?}", &file);
+        },
+        Err(e) => eprintln!("Failed to write blob file: {}", e),
     };
 
     Ok(())
@@ -112,54 +110,100 @@ fn read_blob(hash: &str) -> Option<Vec<u8>> {
     let (dir, file) = hash.split_at(2);
     let file_path = format!(".mgit/objects/{}/{}", dir, file);
 
-    // Read compressed bytes from disk
     let compressed_bytes = fs::read(&file_path).ok()?;
 
-    // DECOMPRESS first
     let mut decoder = ZlibDecoder::new(&compressed_bytes[..]);
     let mut decompressed = Vec::new();
     decoder.read_to_end(&mut decompressed).ok()?;
 
-    // find the null byte in the DECOMPRESSED data
     let null_index = decompressed.iter().position(|&b| b == 0)?;
-
-    // Return content after the null byte
     Some(decompressed[null_index + 1..].to_vec())
 }
 
 pub fn run(file: String){
     check_repo();
 
-    if let Some(data) = read_file(&file) {
+    // Normalize path by stripping leading "./" to prevent duplicate index entries
+    let mut normalized_file = file;
+    if normalized_file.starts_with("./") {
+        normalized_file = normalized_file[2..].to_string();
+    }
+
+    if let Some(data) = read_file(&normalized_file) {
         let hash = hash_bytes(&data);
         if cfg!(debug_assertions) {
             println!("[DEBUG] SHA-1 Hash: {}", hash);
         }
 
-        // Store the blob in the objects directory
         if let Err(e) = store_blob(&data, &hash) {
             eprintln!("Failed to store blob: {}", e);
         }
 
-        // index::create_index();
-        index::update_index(&hash, &file);
+        // Call the localized index updater
+        update_index(&hash, &normalized_file);
 
-        // test blob read
         let blob = read_blob(&hash);
         if cfg!(debug_assertions) {
             match blob {
                 Some(ref bytes) => {
-                    // Try to print as text (if it's a text file)
                     match String::from_utf8_lossy(bytes) {
                         s if s.is_empty() => println!("[DEBUG] blob content: (empty)"),
                         s => println!("[DEBUG] blob content: {}", s),
                     }
-
-                    // If it might be binary, print hex instead
-                    // println!("[DEBUG] blob hex: {:x?}", bytes);
                 },
                 None => println!("[DEBUG] blob content: None (file not found or invalid)"),
             }
         }
+    }
+}
+
+pub fn update_index(hash: &str, file: &str) {
+    let index_path = ".mgit/index";
+
+    let mut normalized_file = file.to_string();
+    if normalized_file.starts_with("./") {
+        normalized_file = normalized_file[2..].to_string();
+    }
+
+    let new_entry = format!("{} | {}", hash, normalized_file);
+    let mut entries: Vec<String> = Vec::new();
+
+    if Path::new(index_path).exists() {
+        if let Ok(contents) = fs::read_to_string(index_path) {
+            entries = contents
+            .lines()
+            .filter(|line| !line.trim().is_empty())
+            .map(|s| s.to_string())
+            // Normalize and compare both entries to discard the old matching file entry
+            .filter(|line| {
+                let parts: Vec<&str> = line.split(" | ").collect();
+                if parts.len() == 2 {
+                    let mut existing_file = parts[1].to_string();
+                    if existing_file.starts_with("./") {
+                        existing_file = existing_file[2..].to_string();
+                    }
+                    existing_file != normalized_file
+                } else {
+                    true
+                }
+            })
+            .collect();
+        }
+    }
+
+    entries.insert(0, new_entry);
+
+    match File::create(index_path) {
+        Ok(mut f) => {
+            for entry in entries {
+                if let Err(e) = writeln!(f, "{}", entry) {
+                    eprintln!("Failed to write entry: {}", e);
+                }
+            }
+            if cfg!(debug_assertions) {
+                println!("[DEBUG] Index successfully updated.");
+            }
+        }
+        Err(e) => eprintln!("Failed to open index file: {}", e),
     }
 }

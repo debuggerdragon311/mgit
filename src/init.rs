@@ -91,43 +91,44 @@ pub fn run(){
             std::process::exit(1);
         }
     };
-    // objects/info
-    match fs::create_dir(".mgit/objects/info"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: info/ created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create info/. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
-    // objects/pak
-    match fs::create_dir(".mgit/objects/pak"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: pak/ created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create pak/. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
+    // objects/info (future-use)
+    // match fs::create_dir(".mgit/objects/info"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: info/ created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create info/. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
 
-    // hooks
-    match fs::create_dir(".mgit/hooks"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: hooks/ created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create hooks. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
+    // objects/pak (future-use)
+    // match fs::create_dir(".mgit/objects/pak"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: pak/ created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create pak/. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
+
+    // hooks (future-use)
+    // match fs::create_dir(".mgit/hooks"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: hooks/ created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create hooks. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
 
     // HEAD
     match File::create(".mgit/HEAD"){
@@ -141,52 +142,55 @@ pub fn run(){
             std::process::exit(1);
         }
     };
-    // info
-    match fs::create_dir(".mgit/info"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: info/ created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create info. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
-    // description
-    match File::create(".mgit/description"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: description created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create description. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
-    // config
-    match File::create(".mgit/config"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: config created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create config. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
-    // info/exclude
-    match File::create(".mgit/info/exclude"){
-        Ok(_) => {
-            if cfg!(debug_assertions){
-                println!("[DEBUG]: info/exclude created...");
-            }
-        }
-        Err(error) => {
-            eprintln!("Could not create info/exclude. Details: {}", error);
-            std::process::exit(1);
-        }
-    };
+    // info (future-use)
+    // match fs::create_dir(".mgit/info"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: info/ created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create info. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
+
+    // description (future-use)
+    // match File::create(".mgit/description"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: description created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create description. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
+
+    // config (future-use)
+    // match File::create(".mgit/config"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: config created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create config. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
+
+    // info/exclude (future-use)
+    // match File::create(".mgit/info/exclude"){
+    //     Ok(_) => {
+    //         if cfg!(debug_assertions){
+    //             println!("[DEBUG]: info/exclude created...");
+    //         }
+    //     }
+    //     Err(error) => {
+    //         eprintln!("Could not create info/exclude. Details: {}", error);
+    //         std::process::exit(1);
+    //     }
+    // };
 }
