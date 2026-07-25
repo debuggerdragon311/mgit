@@ -1,23 +1,30 @@
 # mgit
 
-An experimental, simplified version control system designed to track file changes and mimic core Git workflows.
+(A version control system designed to track file changes)
 
 **Current Version:** v0.0.1 (Pre-alpha)
 
----
 
-## Features & Status
+
+### Features & Status
 
 *   **Repository Initialization** (`mgit init`): Creates the internal database structure to track your files.
 *   **Staging** (`mgit add`): Adds file contents to the staging index.
 *   **Status Tracking** (`mgit status`): Shows differences between the working directory and the staging area.
-*   **Recording Changes** (`mgit commit`): *Currently under active development (Work in Progress).*
+*   **Recording Changes** (`mgit commit`): can now record and maintain a linear history.
 
----
+### Why I'm Building This
+
+This project is a personal learning exercise driven by two main goals:
+
+*   **Understanding Git:** The best way to understand how a tool works is to build it from scratch.
+   Implementing the core mechanics of Git helps demystify how it manages, tracks, and stores data.
+*   **Learning Rust:** I wanted a practical, hands-on project to practice and deepen my understanding of Rust. A
+   version control system provides a great way to explore Rust's safety guarantees, ownership model, and file system APIs.
 
 ### Command Line Interface
 
-```bash
+```text
 mgit [-v | --version] [-h | --help] <COMMANDS> <SUBCOMMANDS>
 
 COMMANDS:
@@ -37,22 +44,14 @@ To run this project locally, clone the repository and build it from the source:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/your-username/mgit.git
+git clone https://github.com/debuggerdragon311/mgit.git
 cd mgit
 ```
-```bash
-# Build/Run instructions (Adjust based on your project's language)
-# Example for Rust: cargo build --release
-# Example for Go:   go build -o mgit
-```
-### Quick Start
 
-1.  Initialize a new repository:
-    mgit init
-2.  Stage a file:
-    mgit add filename.txt
-3.  Check the repository status:
-    mgit status
+### Build/Run instructions
+```bash
+cargo build --release
+```
 
 ## License
 
