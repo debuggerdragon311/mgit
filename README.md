@@ -1,3 +1,6 @@
+> [!WARNING]
+> I wrote this project strictly to explain and understand how Git works under the hood. It would be unwise to use this to version control your actual projects, but it works for learning purposes.
+> It is an **incomplete, half-finished prototype**. It only implements basic operations (`init`, `add`, `status`, `commit`) and will not be completed. It has served its learning purpose and is now **retired, read-only, and no longer maintained**. The codebase is kept here as a static reference.
 # mgit
 
 (A version control system designed to track file changes)
